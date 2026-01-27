@@ -1,0 +1,22 @@
+{
+  "name": "shophub-backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "soumyanjan pujari",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@fastify/jwt": "^10.0.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "fastify": "^5.7.2",
+    "fastify-plugin": "^5.1.0",
+    "mongoose": "^9.1.5"
+  }
+}
