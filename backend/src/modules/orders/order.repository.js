@@ -1,7 +1,12 @@
+import Order from "./order.model.js";
+
 export const createOrder = async (orderData) => {
-  return { id: 101, ...orderData, status: "pending" };
+  const order = await Order.create(orderData);
+  return order;
 };
 
 export const findOrdersByUser = async (userId) => {
-  return [{ id: 101, userId, total: 500 }];
+  return await Order.find({ user: userId })
+    .populate("items.product", "name price")
+    .sort({ createdAt: -1 });
 };

@@ -6,7 +6,7 @@ const register = async (req, reply) => {
 };
 
 const login = async (req, reply) => {
-  const token = await AuthService.login(req.body, req.server); // Pass server instance for jwt
+  const token = await AuthService.login(req.body, req.server);
   reply.send(token);
 };
 

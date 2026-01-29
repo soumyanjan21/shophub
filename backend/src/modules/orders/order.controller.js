@@ -1,7 +1,7 @@
 import * as orderService from "./order.service.js";
 
 export const createOrder = async (request, reply) => {
-  const userId = request.user?.id; // Assuming user is attached by auth
+  const userId = request.user?.id;
   const { items } = request.body;
   return await orderService.placeOrder(userId, items);
 };
