@@ -5,6 +5,7 @@ import { CartItemComponent } from '../../components/cart-item';
 import { CartSummaryComponent } from '../../components/cart-summary';
 import { CheckoutModalComponent } from '../../components/checkout-modal';
 import { RouterLink } from '@angular/router';
+import { EmptyCartIcon } from '../../shared/components/icons/empty-cart-icon.component';
 
 @Component({
   selector: 'app-cart',
@@ -15,6 +16,7 @@ import { RouterLink } from '@angular/router';
     CartSummaryComponent,
     CheckoutModalComponent,
     RouterLink,
+    EmptyCartIcon,
   ],
   template: `
     <section class="cart-section container">
@@ -42,18 +44,7 @@ import { RouterLink } from '@angular/router';
         </div>
       } @else {
         <div class="empty-state">
-          <svg
-            width="64"
-            height="64"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1"
-          >
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
+          <app-empty-cart-icon size="64"></app-empty-cart-icon>
           <h3>Your cart is empty</h3>
           <p>Browse our products and add items to your cart</p>
           <a routerLink="/products" class="btn-primary" style="margin-top: 1rem;">Start Shopping</a>
