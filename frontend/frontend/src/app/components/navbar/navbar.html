@@ -1,0 +1,20 @@
+<nav>
+    <div class="container nav-content">
+        <a href="/" class="logo">
+            🛍️ <span>ShopHub</span>
+        </a>
+        <div class="nav-links">
+            <a routerLink="/" class="nav-link" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}">Home</a>
+            <a routerLink="/products" class="nav-link" routerLinkActive="active">Products</a>
+            <div class="nav-link" style="cursor: pointer;" routerLink="/cart" routerLinkActive="active">
+                <span>Cart</span>
+                <span class="cart-count">{{ cartCount() }}</span>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <button *ngIf="!isAuthenticated()" class="btn-secondary" (click)="openAuthModal()">Login</button>
+            <button *ngIf="isAuthenticated()" class="btn-secondary" (click)="logout()">Logout</button>
+        </div>
+    </div>
+</nav>

@@ -14,6 +14,19 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    type: {
+      type: String,
+      enum: ["Electronics", "Clothing", "Furniture", "Books", "Others"],
+      default: "Others",
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true },
 );
