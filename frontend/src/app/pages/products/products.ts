@@ -83,7 +83,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
         padding: 0 1rem;
       }
 
-      /* Ensure virtual scroll container works properly */
       :host ::ng-deep .cdk-virtual-scroll-content-wrapper {
         width: 100%;
       }
@@ -94,7 +93,6 @@ export class Products {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
 
-  // Using toSignal as requested
   products = toSignal(this.productService.getProducts(), { initialValue: [] });
 
   addToCart(product: Product) {

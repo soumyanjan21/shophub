@@ -15,7 +15,6 @@ import { map } from 'rxjs/operators';
         <div class="hero-content">
           <h1>Discover Amazing Products</h1>
           <p>Shop the latest trends with fast shipping and secure checkout</p>
-          <!-- Anchor link won't scroll smoothly without extra work in Angular routing, but keeping for now -->
           <a href="#products" class="btn-primary">Shop Now</a>
         </div>
       </div>
@@ -49,8 +48,4 @@ import { map } from 'rxjs/operators';
     `,
   ],
 })
-export class Home {
-  // Logic moved to Products page mostly?
-  // The user removed the product grid from Home HTML in Step 596, so Home is just the Hero now.
-  // I will respect that change.
-}
+export class Home {}

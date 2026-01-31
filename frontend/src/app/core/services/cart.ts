@@ -7,7 +7,6 @@ export class CartService {
   cartCount = signal<number>(0);
 
   constructor() {
-    // Initialize cart count from localStorage or API
     const savedCount = localStorage.getItem('cartCount');
     if (savedCount) {
       this.cartCount.set(parseInt(savedCount, 10));

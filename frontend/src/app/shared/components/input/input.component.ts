@@ -4,12 +4,6 @@ import { ErrorMessageService } from '../../services/error-message.service';
 
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel';
 
-/**
- * Reusable input component following SOLID principles
- * - Single Responsibility: Only handles input rendering and state
- * - Dependency Inversion: Depends on ErrorMessageService abstraction
- * - Composition: Uses injected service for error mapping
- */
 @Component({
   selector: 'app-input',
   standalone: true,
@@ -84,7 +78,6 @@ export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel';
         margin-top: -0.25rem;
       }
 
-      /* Autofill styling */
       .input-field:-webkit-autofill,
       .input-field:-webkit-autofill:hover,
       .input-field:-webkit-autofill:focus {
@@ -96,10 +89,8 @@ export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel';
   ],
 })
 export class InputComponent {
-  // Dependency Injection - depends on abstraction, not concretion
   private errorMessageService = inject(ErrorMessageService);
 
-  // Signal-based inputs
   control = input.required<FormControl>();
   label = input<string>('');
   type = input<InputType>('text');
@@ -109,7 +100,6 @@ export class InputComponent {
   private errorMessageValue = '';
 
   constructor() {
-    // Watch for control validation state changes
     effect(() => {
       const ctrl = this.control();
       if (ctrl) {
@@ -120,26 +110,15 @@ export class InputComponent {
     });
   }
 
-  /**
-   * Check if control has validation errors
-   * Single Responsibility - only checks error state
-   */
   hasError(): boolean {
     const ctrl = this.control();
     return !!(ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched));
   }
 
-  /**
-   * Get current error message
-   */
   errorMessage(): string {
     return this.errorMessageValue;
   }
 
-  /**
-   * Update error message using injected service
-   * Composition - delegates to ErrorMessageService
-   */
   private updateErrorMessage(): void {
     const ctrl = this.control();
     if (!ctrl || !this.hasError()) {
@@ -153,7 +132,6 @@ export class InputComponent {
       return;
     }
 
-    // Use injected service for error mapping (Dependency Inversion)
     this.errorMessageValue = this.errorMessageService.mapErrorToMessage(errors);
   }
 }

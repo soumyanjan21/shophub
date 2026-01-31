@@ -5,12 +5,6 @@ import { AuthFormService } from '../../services/auth-form.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 
-/**
- * Signup modal component following SOLID principles
- * - Single Responsibility: Only handles signup UI and interactions
- * - Dependency Inversion: Depends on service abstractions
- * - Composition: Uses injected services for form logic and authentication
- */
 @Component({
   selector: 'app-signup-modal',
   standalone: true,
@@ -130,25 +124,17 @@ import { InputComponent } from '../../../shared/components/input/input.component
   ],
 })
 export class SignupModal {
-  // Dependency Injection
   private authService = inject(AuthService);
-  formService = inject(AuthFormService); // Public for template access
+  formService = inject(AuthFormService);
 
-  // Get signup form controls from service
   signupControls = this.formService.getSignupControls();
 
-  /**
-   * Close modal and reset form
-   */
   closeModal(): void {
     const modal = document.getElementById('signupModal');
     if (modal) modal.classList.remove('active');
     this.formService.resetSignupForm();
   }
 
-  /**
-   * Handle signup form submission
-   */
   onSignup(): void {
     if (!this.formService.isSignupFormValid()) {
       this.formService.markSignupFormAsTouched();
@@ -162,7 +148,6 @@ export class SignupModal {
       next: () => {
         alert('Signup successful! Please login.');
         this.closeModal();
-        // Open login modal
         const loginModal = document.getElementById('loginModal');
         if (loginModal) loginModal.classList.add('active');
         this.formService.isSigningUp.set(false);

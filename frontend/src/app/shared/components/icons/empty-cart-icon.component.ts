@@ -1,14 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-/**
- * Empty cart icon component
- * Displays a shopping cart SVG icon for empty cart states
- */
 @Component({
   selector: 'app-empty-cart-icon',
   standalone: true,
-  imports: [CommonModule],
   host: {
     class: 'flex justify-center items-center',
   },

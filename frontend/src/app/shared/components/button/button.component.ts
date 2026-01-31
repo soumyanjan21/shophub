@@ -40,7 +40,6 @@ export type ButtonSize = 'small' | 'medium' | 'large';
         cursor: not-allowed;
       }
 
-      /* Sizes */
       .size-small {
         padding: 0.5rem 1rem;
         font-size: 0.875rem;
@@ -56,7 +55,6 @@ export type ButtonSize = 'small' | 'medium' | 'large';
         font-size: 1.125rem;
       }
 
-      /* Variants */
       .variant-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -102,7 +100,6 @@ export type ButtonSize = 'small' | 'medium' | 'large';
         background-color: var(--neutral-800, #1f2937);
       }
 
-      /* Loading Spinner */
       .spinner {
         width: 16px;
         height: 16px;

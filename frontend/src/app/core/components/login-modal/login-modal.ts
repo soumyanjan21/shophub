@@ -5,12 +5,6 @@ import { AuthFormService } from '../../services/auth-form.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 
-/**
- * Login modal component following SOLID principles
- * - Single Responsibility: Only handles login UI and interactions
- * - Dependency Inversion: Depends on service abstractions
- * - Composition: Uses injected services for form logic and authentication
- */
 @Component({
   selector: 'app-login-modal',
   standalone: true,
@@ -122,25 +116,17 @@ import { InputComponent } from '../../../shared/components/input/input.component
   ],
 })
 export class LoginModal {
-  // Dependency Injection
   private authService = inject(AuthService);
-  formService = inject(AuthFormService); // Public for template access
+  formService = inject(AuthFormService);
 
-  // Get login form controls from service
   loginControls = this.formService.getLoginControls();
 
-  /**
-   * Close modal and reset form
-   */
   closeModal(): void {
     const modal = document.getElementById('loginModal');
     if (modal) modal.classList.remove('active');
     this.formService.resetLoginForm();
   }
 
-  /**
-   * Handle login form submission
-   */
   onLogin(): void {
     if (!this.formService.isLoginFormValid()) {
       this.formService.markLoginFormAsTouched();

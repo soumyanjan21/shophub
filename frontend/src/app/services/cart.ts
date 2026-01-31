@@ -25,7 +25,6 @@ export class CartService {
 
   cart = signal<Cart | null>(null);
 
-  // Computed (manual for now, could be signal computed)
   cartCount = signal<number>(0);
 
   constructor() {
