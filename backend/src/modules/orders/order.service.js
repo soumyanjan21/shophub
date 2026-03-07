@@ -17,6 +17,13 @@ export const placeOrder = async (userId, items) => {
     total += product.price * item.quantity;
   }
 
+  // Now deduct stock for all items
+  for (const item of items) {
+    await Product.findByIdAndUpdate(item.productId, {
+      $inc: { stock: -item.quantity },
+    });
+  }
+
   const orderData = {
     user: userId,
     items: items.map((item) => ({

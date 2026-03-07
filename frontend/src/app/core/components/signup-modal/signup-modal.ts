@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../../services/auth';
 import { AuthFormService } from '../../services/auth-form.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -12,9 +13,9 @@ import { InputComponent } from '../../../shared/components/input/input.component
   template: `
     <div class="modal" id="signupModal">
       <div class="modal-content">
-        <button class="modal-close" (click)="closeModal()">&times;</button>
+        <button class="modal-close" (click)="closeModal(false)">&times;</button>
         <div class="auth-container">
-          <form (ngSubmit)="onSignup()" class="auth-form">
+          <form (submit)="$event.preventDefault(); onSignup()" class="auth-form">
             <h2>Create Account</h2>
 
             <app-input
@@ -129,10 +130,10 @@ export class SignupModal {
 
   signupControls = this.formService.getSignupControls();
 
-  closeModal(): void {
+  closeModal(isAuthenticated: boolean): void {
     const modal = document.getElementById('signupModal');
     if (modal) modal.classList.remove('active');
-    this.formService.resetSignupForm();
+    this.formService.resetSignupForm(isAuthenticated);
   }
 
   onSignup(): void {
@@ -144,18 +145,23 @@ export class SignupModal {
     this.formService.isSigningUp.set(true);
     const signupData = this.formService.getSignupFormData();
 
-    this.authService.register(signupData).subscribe({
-      next: () => {
-        alert('Signup successful! Please login.');
-        this.closeModal();
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) loginModal.classList.add('active');
-        this.formService.isSigningUp.set(false);
-      },
-      error: (err) => {
-        alert('Signup failed: ' + err.message);
-        this.formService.isSigningUp.set(false);
-      },
-    });
+    this.authService
+      .register(signupData)
+      .pipe(
+        switchMap(() =>
+          this.authService.login({ email: signupData.email, password: signupData.password }),
+        ),
+      )
+      .subscribe({
+        next: () => {
+          this.formService.isSigningUp.set(false);
+          this.closeModal(false);
+          // Auto-login successful; no need to open login modal anymore
+        },
+        error: (err) => {
+          alert('Signup/Auto-login failed: ' + err.message);
+          this.formService.isSigningUp.set(false);
+        },
+      });
   }
 }

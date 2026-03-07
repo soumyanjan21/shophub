@@ -34,6 +34,24 @@ export const addToCart = async (userId, productId, quantity) => {
   return await cartRepository.updateCart(userId, newItems);
 };
 
+export const updateItemQuantity = async (userId, productId, quantity) => {
+  const cart = await getCart(userId);
+  const existingItemIndex = cart.items.findIndex(
+    (item) =>
+      item.product._id.toString() === productId ||
+      item.product.toString() === productId,
+  );
+
+  if (existingItemIndex === -1) {
+    throw new Error("Item not in cart");
+  }
+
+  const newItems = [...cart.items];
+  newItems[existingItemIndex].quantity = quantity;
+
+  return await cartRepository.updateCart(userId, newItems);
+};
+
 export const removeFromCart = async (userId, productId) => {
   const cart = await getCart(userId);
   const newItems = cart.items.filter(

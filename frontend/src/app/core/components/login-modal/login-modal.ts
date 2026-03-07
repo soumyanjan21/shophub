@@ -12,9 +12,9 @@ import { InputComponent } from '../../../shared/components/input/input.component
   template: `
     <div class="modal" id="loginModal">
       <div class="modal-content">
-        <button class="modal-close" (click)="closeModal()">&times;</button>
+        <button class="modal-close" (click)="closeModal(false)">&times;</button>
         <div class="auth-container">
-          <form (ngSubmit)="onLogin()" class="auth-form">
+          <form (submit)="$event.preventDefault(); onLogin()" class="auth-form">
             <h2>Welcome Back</h2>
 
             <app-input
@@ -116,15 +116,15 @@ import { InputComponent } from '../../../shared/components/input/input.component
   ],
 })
 export class LoginModal {
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
   formService = inject(AuthFormService);
 
   loginControls = this.formService.getLoginControls();
 
-  closeModal(): void {
+  closeModal(isAuthenticated: boolean): void {
     const modal = document.getElementById('loginModal');
     if (modal) modal.classList.remove('active');
-    this.formService.resetLoginForm();
+    this.formService.resetLoginForm(isAuthenticated);
   }
 
   onLogin(): void {
@@ -132,14 +132,14 @@ export class LoginModal {
       this.formService.markLoginFormAsTouched();
       return;
     }
-
+    console.log('Login form is valid');
     this.formService.isLoggingIn.set(true);
     const loginData = this.formService.getLoginFormData();
 
     this.authService.login(loginData).subscribe({
-      next: () => {
-        alert('Login successful');
-        this.closeModal();
+      next: (token) => {
+        console.log('Login successful');
+        this.closeModal(false);
       },
       error: (err) => {
         alert('Login failed: ' + err.message);

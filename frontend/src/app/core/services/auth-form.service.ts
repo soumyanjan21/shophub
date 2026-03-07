@@ -95,20 +95,20 @@ export class AuthFormService {
     this.signupForm.markAllAsTouched();
   }
 
-  resetAllForms(): void {
+  resetAllForms(isLoggingIn: boolean, isSigningUp: boolean): void {
     this.loginForm.reset();
     this.signupForm.reset();
-    this.isLoggingIn.set(false);
-    this.isSigningUp.set(false);
+    this.isLoggingIn.set(isLoggingIn);
+    this.isSigningUp.set(isSigningUp);
   }
 
-  resetLoginForm(): void {
+  resetLoginForm(isLoggingIn: boolean): void {
     this.loginForm.reset();
-    this.isLoggingIn.set(false);
+    this.isLoggingIn.set(isLoggingIn);
   }
 
-  resetSignupForm(): void {
+  resetSignupForm(isSigningUp: boolean): void {
     this.signupForm.reset();
-    this.isSigningUp.set(false);
+    this.isSigningUp.set(isSigningUp);
   }
 }

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CartItem } from '../services/cart';
+import { CART_CONFIG } from '../config/cart.config';
 
 @Component({
   selector: 'app-cart-item',
@@ -7,23 +8,43 @@ import { CartItem } from '../services/cart';
   template: `
     <div class="cart-item">
       <img
-        [src]="item.product.image || 'https://placehold.co/100?text=No+Image'"
+        [src]="item.product.image || placeholderImage"
         class="cart-item-image"
-        alt="{{ item.product.name }}"
+        [alt]="item.product.name"
       />
       <div class="cart-item-details">
         <h3>{{ item.product.name }}</h3>
         <p>{{ item.product.description }}</p>
         <div class="cart-item-controls">
           <div class="quantity-control">
-            <button (click)="onQuantityChange(-1)">-</button>
-            <span class="quantity-display">{{ item.quantity }}</span>
-            <button (click)="onQuantityChange(1)">+</button>
+            <button
+              (click)="onQuantityChange(-1)"
+              [disabled]="isMinQuantity"
+              [attr.aria-label]="'Decrease quantity of ' + item.product.name"
+              [class.disabled]="isMinQuantity"
+            >
+              -
+            </button>
+            <span class="quantity-display" aria-live="polite">{{ item.quantity }}</span>
+            <button
+              (click)="onQuantityChange(1)"
+              [disabled]="isMaxQuantity"
+              [attr.aria-label]="'Increase quantity of ' + item.product.name"
+              [class.disabled]="isMaxQuantity"
+            >
+              +
+            </button>
           </div>
-          <button class="remove-item" (click)="onRemove()">Remove</button>
+          <button
+            class="remove-item"
+            (click)="onRemove()"
+            [attr.aria-label]="'Remove ' + item.product.name + ' from cart'"
+          >
+            Remove
+          </button>
         </div>
       </div>
-      <div class="cart-item-price">\${{ (item.product.price * item.quantity).toFixed(2) }}</div>
+      <div class="cart-item-price">\${{ itemTotal.toFixed(2) }}</div>
     </div>
   `,
   styles: [
@@ -77,9 +98,15 @@ import { CartItem } from '../services/cart';
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: color 0.2s ease;
       }
-      .quantity-control button:hover {
+      .quantity-control button:hover:not(.disabled) {
         color: var(--primary);
+      }
+      .quantity-control button.disabled {
+        color: var(--neutral-600);
+        cursor: not-allowed;
+        opacity: 0.5;
       }
       .quantity-display {
         min-width: 20px;
@@ -95,9 +122,11 @@ import { CartItem } from '../services/cart';
         cursor: pointer;
         font-size: 0.9rem;
         padding: 0;
+        transition: opacity 0.2s ease;
       }
       .remove-item:hover {
         text-decoration: underline;
+        opacity: 0.8;
       }
       .cart-item-price {
         color: var(--white);
@@ -123,11 +152,47 @@ export class CartItemComponent {
   @Output() quantityChange = new EventEmitter<number>();
   @Output() remove = new EventEmitter<void>();
 
-  onQuantityChange(delta: number) {
+  protected readonly placeholderImage = CART_CONFIG.PLACEHOLDER_IMAGE;
+
+  /**
+   * Check if item is at minimum quantity
+   */
+  get isMinQuantity(): boolean {
+    return this.item.quantity <= CART_CONFIG.MIN_QUANTITY;
+  }
+
+  /**
+   * Check if item is at maximum quantity
+   */
+  get isMaxQuantity(): boolean {
+    return this.item.quantity >= CART_CONFIG.MAX_QUANTITY;
+  }
+
+  /**
+   * Calculate total price for this item
+   */
+  get itemTotal(): number {
+    return this.item.product.price * this.item.quantity;
+  }
+
+  /**
+   * Handle quantity change with validation
+   */
+  onQuantityChange(delta: number): void {
+    const newQuantity = this.item.quantity + delta;
+
+    // Validate quantity bounds
+    if (newQuantity < CART_CONFIG.MIN_QUANTITY || newQuantity > CART_CONFIG.MAX_QUANTITY) {
+      return;
+    }
+
     this.quantityChange.emit(delta);
   }
 
-  onRemove() {
+  /**
+   * Handle item removal
+   */
+  onRemove(): void {
     this.remove.emit();
   }
 }

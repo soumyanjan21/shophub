@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import User from "../users/user.model.js";
 
-const register = async ({ email, password }) => {
+const register = async ({ name, email, password }) => {
   const hash = await bcrypt.hash(password, 10);
-  return User.create({ email, password: hash });
-};  
+  return User.create({ name, email, password: hash });
+};
 
 const login = async ({ email, password }, fastify) => {
   const user = await User.findOne({ email });
@@ -17,7 +17,7 @@ const login = async ({ email, password }, fastify) => {
     accessToken: fastify.jwt.sign({ id: user._id, role: user.role }),
   };
 };
- 
+
 export default {
   register,
   login,

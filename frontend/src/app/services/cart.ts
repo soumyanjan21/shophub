@@ -1,13 +1,14 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
 import { Product } from './product';
+import { AuthService } from '../core/services/auth';
 
 export interface CartItem {
   product: Product;
   quantity: number;
-  _id?: string; // Item ID if needed (or use product ID)
+  _id?: string;
 }
 
 export interface Cart {
@@ -23,42 +24,105 @@ export interface Cart {
 export class CartService {
   private http = inject(HttpClient);
 
+  // State signals
   cart = signal<Cart | null>(null);
-
   cartCount = signal<number>(0);
+  isLoading = signal<boolean>(false);
+  error = signal<string | null>(null);
+
+  private authService = inject(AuthService);
 
   constructor() {
-    this.getCart().subscribe();
+    if (this.authService.isAuthenticated()) {
+      this.getCart().subscribe();
+    }
   }
 
-  getCart() {
+  /**
+   * Fetch the current cart from the server
+   */
+  getCart(): Observable<Cart> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
     return this.http.get<Cart>('/api/cart').pipe(
-      tap((cart) => {
-        this.cart.set(cart);
-        this.updateCount(cart);
-      }),
+      tap((cart) => this.handleCartUpdate(cart)),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.isLoading.set(false)),
     );
   }
 
-  addToCart(productId: string, quantity: number = 1) {
+  /**
+   * Add an item to the cart or update quantity
+   */
+  addToCart(productId: string, quantity: number = 1): Observable<Cart> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
     return this.http.post<Cart>('/api/cart', { productId, quantity }).pipe(
-      tap((cart) => {
-        this.cart.set(cart);
-        this.updateCount(cart);
-      }),
+      tap((cart) => this.handleCartUpdate(cart)),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.isLoading.set(false)),
     );
   }
 
-  removeItem(productId: string) {
+  /**
+   * Update item quantity in the cart
+   */
+  updateQuantity(productId: string, quantity: number): Observable<Cart> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    return this.http.put<Cart>(`/api/cart/${productId}`, { quantity }).pipe(
+      tap((cart) => this.handleCartUpdate(cart)),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.isLoading.set(false)),
+    );
+  }
+
+  /**
+   * Remove an item from the cart
+   */
+  removeItem(productId: string): Observable<Cart> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
     return this.http.delete<Cart>(`/api/cart/${productId}`).pipe(
-      tap((cart) => {
-        this.cart.set(cart);
-        this.updateCount(cart);
-      }),
+      tap((cart) => this.handleCartUpdate(cart)),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.isLoading.set(false)),
     );
   }
 
-  private updateCount(cart: Cart | null) {
+  /**
+   * Clear error state
+   */
+  clearError(): void {
+    this.error.set(null);
+  }
+
+  /**
+   * Centralized cart update handler (DRY principle)
+   */
+  private handleCartUpdate(cart: Cart): void {
+    this.cart.set(cart);
+    this.updateCount(cart);
+  }
+
+  /**
+   * Centralized error handler
+   */
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    const errorMessage = error.error?.message || 'An error occurred. Please try again.';
+    this.error.set(errorMessage);
+    console.error('Cart service error:', error);
+    return throwError(() => error);
+  }
+
+  /**
+   * Update cart item count
+   */
+  private updateCount(cart: Cart | null): void {
     if (!cart) {
       this.cartCount.set(0);
       return;

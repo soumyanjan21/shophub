@@ -13,6 +13,18 @@ const addItem = async (req, reply) => {
   return cart;
 };
 
+const updateItem = async (req, reply) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const { quantity } = req.body;
+  const cart = await cartService.updateItemQuantity(
+    userId,
+    productId,
+    quantity,
+  );
+  return cart;
+};
+
 const removeItem = async (req, reply) => {
   const userId = req.user.id;
   const { productId } = req.params;
@@ -23,5 +35,6 @@ const removeItem = async (req, reply) => {
 export default {
   getCart,
   addItem,
+  updateItem,
   removeItem,
 };
