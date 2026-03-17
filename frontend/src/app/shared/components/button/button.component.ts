@@ -4,7 +4,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 export type ButtonSize = 'small' | 'medium' | 'large';
 
 @Component({
-  selector: 'app-button',
+  selector: 'shop-button',
   standalone: true,
   imports: [],
   template: `

@@ -1,14 +1,15 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CartItem } from '../services/cart';
 import { CART_CONFIG } from '../config/cart.config';
+import { NgOptimizedImage } from "@angular/common";
 
 @Component({
-  selector: 'app-cart-item',
+  selector: 'shop-cart-item',
   standalone: true,
   template: `
     <div class="cart-item">
       <img
-        [src]="item.product.image || placeholderImage"
+        [ngSrc]="item.product.image || placeholderImage"
         class="cart-item-image"
         [alt]="item.product.name"
       />
@@ -146,6 +147,7 @@ import { CART_CONFIG } from '../config/cart.config';
       }
     `,
   ],
+  imports: [NgOptimizedImage],
 })
 export class CartItemComponent {
   @Input({ required: true }) item!: CartItem;

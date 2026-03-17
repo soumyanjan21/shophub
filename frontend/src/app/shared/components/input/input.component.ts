@@ -5,7 +5,7 @@ import { ErrorMessageService } from '../../services/error-message.service';
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel';
 
 @Component({
-  selector: 'app-input',
+  selector: 'shop-input',
   standalone: true,
   imports: [ReactiveFormsModule],
   template: `

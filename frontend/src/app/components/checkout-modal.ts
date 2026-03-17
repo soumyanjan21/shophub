@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-checkout-modal',
+  selector: 'shop-checkout-modal',
   standalone: true,
   imports: [CommonModule],
   template: `

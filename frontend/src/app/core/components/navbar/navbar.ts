@@ -4,7 +4,7 @@ import { CartService } from '../../services/cart';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
-  selector: 'app-navbar',
+  selector: 'shop-navbar',
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   template: `

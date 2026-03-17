@@ -1,16 +1,16 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Product } from '../services/product';
 
 @Component({
-  selector: 'app-product-card',
+  selector: 'shop-product-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   template: `
     <div class="product-card">
       <!-- <div class="product-image">{{ product.emoji }}</div> -->
       <img
-        [src]="product.image || 'https://placehold.co/400?text=No+Image'"
+        [ngSrc]="product.image || 'https://placehold.co/400?text=No+Image'"
         alt="{{ product.name }}"
         class="product-image"
         loading="lazy"

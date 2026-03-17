@@ -6,7 +6,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { InputComponent } from '../../../shared/components/input/input.component';
 
 @Component({
-  selector: 'app-login-modal',
+  selector: 'shop-login-modal',
   standalone: true,
   imports: [ReactiveFormsModule, ButtonComponent, InputComponent],
   template: `
@@ -17,7 +17,7 @@ import { InputComponent } from '../../../shared/components/input/input.component
           <form (submit)="$event.preventDefault(); onLogin()" class="auth-form">
             <h2>Welcome Back</h2>
 
-            <app-input
+            <shop-input
               [control]="loginControls.email"
               [label]="'Email'"
               [type]="'email'"
@@ -25,7 +25,7 @@ import { InputComponent } from '../../../shared/components/input/input.component
               [placeholder]="'Enter your email'"
             />
 
-            <app-input
+            <shop-input
               [control]="loginControls.password"
               [label]="'Password'"
               [type]="'password'"
@@ -33,7 +33,7 @@ import { InputComponent } from '../../../shared/components/input/input.component
               [placeholder]="'Enter your password'"
             />
 
-            <app-button
+            <shop-button
               [type]="'submit'"
               [variant]="'primary'"
               [size]="'medium'"
@@ -41,7 +41,7 @@ import { InputComponent } from '../../../shared/components/input/input.component
               [loading]="formService.isLoggingIn()"
             >
               Login
-            </app-button>
+            </shop-button>
           </form>
         </div>
       </div>
@@ -105,11 +105,11 @@ import { InputComponent } from '../../../shared/components/input/input.component
         text-align: center;
         color: var(--white);
       }
-      app-button {
+      shop-button {
         width: 100%;
         margin-top: 0.5rem;
       }
-      app-button button {
+      shop-button button {
         width: 100%;
       }
     `,

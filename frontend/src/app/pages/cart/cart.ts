@@ -9,7 +9,7 @@ import { EmptyCartIcon } from '../../shared/components/icons/empty-cart-icon.com
 import { CART_CONFIG, CART_MESSAGES } from '../../config/cart.config';
 
 @Component({
-  selector: 'app-cart',
+  selector: 'shop-cart',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,26 +33,26 @@ import { CART_CONFIG, CART_MESSAGES } from '../../config/cart.config';
         <div class="cart-grid">
           <div class="cart-items">
             @for (item of cart()!.items; track item.product._id) {
-              <app-cart-item
+              <shop-cart-item
                 [item]="item"
                 (quantityChange)="updateQuantity(item.product._id, $event)"
                 (remove)="confirmRemoveItem(item.product._id, item.product.name)"
               >
-              </app-cart-item>
+              </shop-cart-item>
             }
           </div>
 
-          <app-cart-summary
+          <shop-cart-summary
             [subtotal]="subtotal()"
             [tax]="tax()"
             [total]="total()"
             (checkout)="openCheckout()"
           >
-          </app-cart-summary>
+          </shop-cart-summary>
         </div>
       } @else if (!cartService.isLoading()) {
         <div class="empty-state">
-          <app-empty-cart-icon size="64"></app-empty-cart-icon>
+          <shop-empty-cart-icon size="64"></shop-empty-cart-icon>
           <h3>Your cart is empty</h3>
           <p>Browse our products and add items to your cart</p>
           <a routerLink="/products" class="btn-primary">Start Shopping</a>
@@ -66,7 +66,7 @@ import { CART_CONFIG, CART_MESSAGES } from '../../config/cart.config';
       }
     </section>
 
-    <app-checkout-modal [isOpen]="isCheckoutOpen()" (close)="closeCheckout()"></app-checkout-modal>
+    <shop-checkout-modal [isOpen]="isCheckoutOpen()" (close)="closeCheckout()"></shop-checkout-modal>
 
     @if (confirmationDialog()) {
       <div class="confirmation-overlay" (click)="cancelRemove()">

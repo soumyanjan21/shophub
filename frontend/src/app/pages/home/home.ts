@@ -6,7 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-home',
+  selector: 'shop-home',
   standalone: true,
   imports: [CommonModule],
   template: `

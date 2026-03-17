@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-empty-cart-icon',
+  selector: 'shop-empty-cart-icon',
   standalone: true,
   host: {
     class: 'flex justify-center items-center',

@@ -7,7 +7,7 @@ import { ProductCardComponent } from '../../components/product-card';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-products',
+  selector: 'shop-products',
   standalone: true,
   imports: [CommonModule, ProductCardComponent, ScrollingModule],
   template: `
@@ -28,10 +28,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
         <cdk-virtual-scroll-viewport [itemSize]="350" class="products-viewport">
           <div class="products-grid">
             @for (product of products(); track product._id) {
-              <app-product-card
+              <shop-product-card
                 [product]="product"
                 (addToCart)="addToCart($event)"
-              ></app-product-card>
+              ></shop-product-card>
             }
           </div>
         </cdk-virtual-scroll-viewport>
