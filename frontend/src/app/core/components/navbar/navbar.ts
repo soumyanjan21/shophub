@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { AuthService } from '../../services/auth';
-import { CartService } from '../../services/cart';
+import { CartService } from '../../../services/cart';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -27,7 +27,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             routerLinkActive="active"
           >
             <span>Cart</span>
-            <span class="cart-count">{{ cartCount() }}</span>
+            <span class="cart-count">{{ cartService.cartCount() }}</span>
           </div>
         </div>
         <div class="nav-actions">
@@ -109,7 +109,7 @@ export class Navbar {
   cartService = inject(CartService);
 
   isAuthenticated = this.authService.isAuthenticated;
-  cartCount = this.cartService.cartCount;
+  cartCount = computed(() => this.cartService.cartCount());
 
   openLoginModal() {
     const modal = document.getElementById('loginModal');

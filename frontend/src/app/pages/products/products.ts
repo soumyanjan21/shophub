@@ -10,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'shop-products',
   standalone: true,
   imports: [CommonModule, ProductCardComponent, ScrollingModule],
+  providers: [ProductService],
   template: `
     <section class="products-section" id="products">
       <div class="container">

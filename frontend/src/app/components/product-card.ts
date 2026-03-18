@@ -13,7 +13,8 @@ import { Product } from '../services/product';
         [ngSrc]="product.image || 'https://placehold.co/400?text=No+Image'"
         alt="{{ product.name }}"
         class="product-image"
-        loading="lazy"
+        width="400"
+        height="400"
       />
       <div class="product-content">
         <div class="product-category">{{ product.category }}</div>

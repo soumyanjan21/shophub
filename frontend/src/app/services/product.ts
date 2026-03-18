@@ -15,9 +15,6 @@ export interface Product {
   createdAt?: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
 export class ProductService {
   private http = inject(HttpClient);
   private apiUrl = '/api/products';

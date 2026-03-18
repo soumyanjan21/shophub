@@ -23,7 +23,6 @@ export interface Cart {
 })
 export class CartService {
   private http = inject(HttpClient);
-
   // State signals
   cart = signal<Cart | null>(null);
   cartCount = signal<number>(0);
@@ -31,6 +30,8 @@ export class CartService {
   error = signal<string | null>(null);
 
   private authService = inject(AuthService);
+
+
 
   constructor() {
     if (this.authService.isAuthenticated()) {
@@ -58,7 +59,7 @@ export class CartService {
   addToCart(productId: string, quantity: number = 1): Observable<Cart> {
     this.isLoading.set(true);
     this.error.set(null);
-
+    
     return this.http.post<Cart>('/api/cart', { productId, quantity }).pipe(
       tap((cart) => this.handleCartUpdate(cart)),
       catchError((error) => this.handleError(error)),

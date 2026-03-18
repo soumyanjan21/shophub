@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CartItem } from '../services/cart';
 import { CART_CONFIG } from '../config/cart.config';
-import { NgOptimizedImage } from "@angular/common";
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'shop-cart-item',
@@ -12,6 +12,8 @@ import { NgOptimizedImage } from "@angular/common";
         [ngSrc]="item.product.image || placeholderImage"
         class="cart-item-image"
         [alt]="item.product.name"
+        width="400"
+        height="400"
       />
       <div class="cart-item-details">
         <h3>{{ item.product.name }}</h3>
