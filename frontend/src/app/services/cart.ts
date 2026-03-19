@@ -116,7 +116,7 @@ export class CartService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     const errorMessage = error.error?.message || 'An error occurred. Please try again.';
     this.error.set(errorMessage);
-    console.error('Cart service error:', error);
+    alert(`Cart service error:${error.message}`) ;
     return throwError(() => error);
   }
 

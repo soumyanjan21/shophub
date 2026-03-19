@@ -1,14 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ProductService, Product } from '../../services/product';
-import { CartService } from '../../services/cart';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
+import { Component } from '@angular/core';
+
 
 @Component({
   selector: 'shop-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <section class="hero">
       <div class="container">

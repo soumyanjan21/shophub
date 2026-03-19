@@ -53,6 +53,7 @@ export const updateItemQuantity = async (userId, productId, quantity) => {
 };
 
 export const removeFromCart = async (userId, productId) => {
+  console.log(userId, productId);
   const cart = await getCart(userId);
   const newItems = cart.items.filter(
     (item) =>
