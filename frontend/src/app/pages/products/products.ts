@@ -1,39 +1,31 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ProductService, Product } from '../../services/product';
 import { CartService } from '../../services/cart';
-import { ProductCardComponent } from '../../components/product-card';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ProductFilters } from './product-filters/product-filters.component';
+import { ProductList } from './product-list/product-list.component';
 
 @Component({
   selector: 'shop-products',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, ScrollingModule],
+  imports: [CommonModule, ProductFilters, ProductList],
   providers: [ProductService],
   template: `
     <section class="products-section" id="products">
       <div class="container">
         <h2>Featured Products</h2>
-        <div class="filters">
-          <input type="text" placeholder="Search products..." class="search-input" />
-          <select class="category-filter" (change)="onCategoryChange($event)">
-            @for (category of categories; track category) {
-              <option [value]="category">{{ category }}</option>
-            }
-          </select>
-        </div>
+        <shop-product-filters 
+          [categories]="categories" 
+          [selectedCategory]="category()" 
+          (categoryChange)="category.set($event)"
+          (searchChange)="onSearch($event)"
+        ></shop-product-filters>
 
-        <cdk-virtual-scroll-viewport [itemSize]="350" class="products-viewport">
-          <div class="products-grid">
-            @for (product of filteredProducts(); track product._id) {
-              <shop-product-card
-                [product]="product"
-                (addToCart)="addToCart($event)"
-              ></shop-product-card>
-            }
-          </div>
-        </cdk-virtual-scroll-viewport>
+        <shop-product-list 
+          [products]="filteredProducts()" 
+          (addToCart)="addToCart($event)"
+        ></shop-product-list>
       </div>
     </section>
   `,
@@ -47,69 +39,42 @@ import { toSignal } from '@angular/core/rxjs-interop';
         margin-bottom: 2rem;
         text-align: center;
       }
-      .filters {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-bottom: 3rem;
-      }
-      .search-input {
-        background-color: var(--neutral-800);
-        border: 1px solid var(--neutral-700);
-        color: var(--white);
-        padding: 0.75rem 1.5rem;
-        border-radius: var(--radius);
-        min-width: 300px;
-        font-size: 1rem;
-      }
-      .category-filter {
-        background-color: var(--neutral-800);
-        border: 1px solid var(--neutral-700);
-        color: var(--white);
-        padding: 0.75rem 1.5rem;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-size: 1rem;
-      }
-      .products-viewport {
-        height: 800px;
-        width: 100%;
-      }
-      .products-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 2rem;
-        padding: 0 1rem;
-      }
-
-      :host ::ng-deep .cdk-virtual-scroll-content-wrapper {
-        width: 100%;
-      }
-    `,
-  ],
+    `
+  ]
 })
 export class Products {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
-  private category = signal<string>('All');
+  
+  category = signal<string>('All');
+  search = signal<string>('');
   categories = ['All', 'Books', 'Clothing', 'Electronics', 'Furniture', 'Others'];
 
   products = toSignal(this.productService.getProducts(), { initialValue: [] });
+  
   filteredProducts = computed(() => {
-    if (this.category() === 'All') {
-      return this.products();
+    let result = this.products();
+    
+    if (this.category() !== 'All') {
+      result = result.filter((product) => product.type === this.category());
     }
-    return this.products().filter((product) => product.type === this.category());
+    
+    const term = this.search().toLowerCase();
+    if (term) {
+      result = result.filter((product) => product.name.toLowerCase().includes(term));
+    }
+    
+    return result;
   });
-
-  onCategoryChange(event: Event) {
-    this.category.set((event.target as HTMLSelectElement).value);
-  }
 
   addToCart(product: Product) {
     this.cartService.addToCart(product._id).subscribe({
       next: () => alert(`${product.name} added to cart!`),
       error: () => alert('Failed to add to cart (Are you logged in?)'),
     });
+  }
+
+  onSearch(searchTerm: string) {
+    this.search.set(searchTerm);
   }
 }
