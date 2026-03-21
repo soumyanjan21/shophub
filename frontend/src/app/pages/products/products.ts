@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ProductService, Product } from '../../services/product';
@@ -17,18 +17,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
         <h2>Featured Products</h2>
         <div class="filters">
           <input type="text" placeholder="Search products..." class="search-input" />
-          <select class="category-filter">
-            <option value="">All Categories</option>
-            <option value="electronics">Electronics</option>
-            <option value="fashion">Fashion</option>
-            <option value="home">Home & Garden</option>
-            <option value="sports">Sports & Outdoors</option>
+          <select class="category-filter" (change)="onCategoryChange($event)">
+            @for (category of categories; track category) {
+              <option [value]="category">{{ category }}</option>
+            }
           </select>
         </div>
 
         <cdk-virtual-scroll-viewport [itemSize]="350" class="products-viewport">
           <div class="products-grid">
-            @for (product of products(); track product._id) {
+            @for (product of filteredProducts(); track product._id) {
               <shop-product-card
                 [product]="product"
                 (addToCart)="addToCart($event)"
@@ -93,8 +91,20 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class Products {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
+  private category = signal<string>('All');
+  categories = ['All', 'Books', 'Clothing', 'Electronics', 'Furniture', 'Others'];
 
   products = toSignal(this.productService.getProducts(), { initialValue: [] });
+  filteredProducts = computed(() => {
+    if (this.category() === 'All') {
+      return this.products();
+    }
+    return this.products().filter((product) => product.type === this.category());
+  });
+
+  onCategoryChange(event: Event) {
+    this.category.set((event.target as HTMLSelectElement).value);
+  }
 
   addToCart(product: Product) {
     this.cartService.addToCart(product._id).subscribe({
