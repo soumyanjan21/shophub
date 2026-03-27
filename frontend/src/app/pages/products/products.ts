@@ -5,6 +5,7 @@ import { CartService } from '../../services/cart';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductFilters } from './product-filters/product-filters.component';
 import { ProductList } from './product-list/product-list.component';
+import { PRODUCT_CATEGORIES, DEFAULT_CATEGORY } from '../../constants';
 
 @Component({
   selector: 'shop-products',
@@ -15,15 +16,15 @@ import { ProductList } from './product-list/product-list.component';
     <section class="products-section" id="products">
       <div class="container">
         <h2>Featured Products</h2>
-        <shop-product-filters 
-          [categories]="categories" 
-          [selectedCategory]="category()" 
+        <shop-product-filters
+          [categories]="categories"
+          [selectedCategory]="category()"
           (categoryChange)="category.set($event)"
           (searchChange)="onSearch($event)"
         ></shop-product-filters>
 
-        <shop-product-list 
-          [products]="filteredProducts()" 
+        <shop-product-list
+          [products]="filteredProducts()"
           (addToCart)="addToCart($event)"
         ></shop-product-list>
       </div>
@@ -39,42 +40,43 @@ import { ProductList } from './product-list/product-list.component';
         margin-bottom: 2rem;
         text-align: center;
       }
-    `
-  ]
+    `,
+  ],
 })
 export class Products {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
-  
-  category = signal<string>('All');
-  search = signal<string>('');
-  categories = ['All', 'Books', 'Clothing', 'Electronics', 'Furniture', 'Others'];
 
-  products = toSignal(this.productService.getProducts(), { initialValue: [] });
-  
+  readonly categories: string[] = [...PRODUCT_CATEGORIES];
+
+  category = signal<string>(DEFAULT_CATEGORY);
+  search = signal<string>('');
+
+  products = toSignal(this.productService.getProducts(), { initialValue: [] as Product[] });
+
   filteredProducts = computed(() => {
     let result = this.products();
-    
-    if (this.category() !== 'All') {
+
+    if (this.category() !== DEFAULT_CATEGORY) {
       result = result.filter((product) => product.type === this.category());
     }
-    
+
     const term = this.search().toLowerCase();
     if (term) {
       result = result.filter((product) => product.name.toLowerCase().includes(term));
     }
-    
+
     return result;
   });
 
-  addToCart(product: Product) {
+  addToCart(product: Product): void {
     this.cartService.addToCart(product._id).subscribe({
       next: () => alert(`${product.name} added to cart!`),
       error: () => alert('Failed to add to cart (Are you logged in?)'),
     });
   }
 
-  onSearch(searchTerm: string) {
+  onSearch(searchTerm: string): void {
     this.search.set(searchTerm);
   }
 }

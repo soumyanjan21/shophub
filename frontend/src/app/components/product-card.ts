@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Product } from '../services/product';
+import { PLACEHOLDER_IMAGE_URL } from '../constants';
 
 @Component({
   selector: 'shop-product-card',
@@ -10,7 +11,7 @@ import { Product } from '../services/product';
     <div class="product-card">
       <!-- <div class="product-image">{{ product.emoji }}</div> -->
       <img
-        [ngSrc]="product.image || 'https://placehold.co/400?text=No+Image'"
+        [ngSrc]="product.image || placeholderImage"
         alt="{{ product.name }}"
         class="product-image"
         width="400"
@@ -99,4 +100,6 @@ import { Product } from '../services/product';
 export class ProductCardComponent {
   @Input({ required: true }) product!: Product;
   @Output() addToCart = new EventEmitter<Product>();
+
+  readonly placeholderImage = PLACEHOLDER_IMAGE_URL;
 }

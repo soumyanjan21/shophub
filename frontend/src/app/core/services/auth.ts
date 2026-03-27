@@ -1,15 +1,18 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { LoginFormData, SignupFormData } from './auth-form.service';
+import { API_ROUTES, LOCAL_STORAGE_KEYS } from '../../constants';
 
-interface User {
+export interface User {
   id: string;
   name?: string;
   email: string;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   accessToken: string;
 }
 
@@ -21,37 +24,37 @@ export class AuthService {
   private router = inject(Router);
 
   currentUser = signal<User | null>(null);
-  token = signal<string | null>(localStorage.getItem('token'));
-  isAuthenticated = signal<boolean>(!!localStorage.getItem('token'));
+  token = signal<string | null>(localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN));
+  isAuthenticated = signal<boolean>(!!localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN));
 
   constructor() {}
 
-  login(credentials: any) {
-    return this.http.post<AuthResponse>('/api/auth/login', credentials).pipe(
+  login(credentials: LoginFormData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(API_ROUTES.AUTH_LOGIN, credentials).pipe(
       tap((response) => {
         this.setSession(response.accessToken);
       }),
     );
   }
 
-  register(data: any) {
-    return this.http.post<any>('/api/auth/register', data);
+  register(data: SignupFormData): Observable<void> {
+    return this.http.post<void>(API_ROUTES.AUTH_REGISTER, data);
   }
 
-  logout() {
-    localStorage.removeItem('token');
+  logout(): void {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
     this.router.navigate(['/']);
   }
 
-  private setSession(token: string) {
-    localStorage.setItem('token', token);
-    this.token.set(token);
-    this.isAuthenticated.set(true);
+  getToken(): string | null {
+    return this.token();
   }
 
-  getToken() {
-    return this.token();
+  private setSession(token: string): void {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+    this.token.set(token);
+    this.isAuthenticated.set(true);
   }
 }
